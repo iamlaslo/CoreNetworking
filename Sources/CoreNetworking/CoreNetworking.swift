@@ -24,23 +24,34 @@ public struct Endpoint {
   var method: RequestMethod
   var header: [String: String]?
   var body: [String: String]?
+  var query: [String: String]?
   
   public init(
     base: String,
     path: String,
     method: RequestMethod,
     header: [String : String]? = nil,
-    body: [String : String]? = nil
+    body: [String : String]? = nil,
+    query: [String : String]? = nil
   ) {
     self.base = base
     self.path = path
     self.method = method
     self.header = header
     self.body = body
+    self.query = query
   }
   
   var url: URL? {
-    return URL(string: self.base + self.path)
+    if let query {
+      let queryAsString = query.map {
+        "\($0.value)=\($0.key)"
+      }.joined(separator: "&")
+      
+      return URL(string: self.base + self.path + "?" + queryAsString)
+    } else {
+      return URL(string: self.base + self.path)
+    }
   }
 }
 
