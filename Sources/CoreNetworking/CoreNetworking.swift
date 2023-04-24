@@ -45,7 +45,7 @@ public struct Endpoint {
   var url: URL? {
     if let query {
       let queryAsString = query.map {
-        "\($0.value)=\($0.key)"
+        "\($0.key)=\($0.value)"
       }.joined(separator: "&")
       
       return URL(string: self.base + self.path + "?" + queryAsString)
