@@ -53,11 +53,25 @@ public final class NetworkManager {
     case invalidUrl
     case noResponse
     case decode
+    case unexpected(statusCode: Int)
+    
+    public var description: String {
+      switch self {
+      case .unknown:
+        return "🛑 Error -- Unknown"
+      case .invalidUrl:
+        return "🛑 Error -- Invalid URL"
+      case .noResponse:
+        return "🛑 Error -- No Response"
+      case .decode:
+        return "🛑 Error -- Decoding Error"
+      case let .unexpected(statusCode):
+        return "🛑 Error -- Status Code \(statusCode)"
+      }
+    }
   }
   
-  public init() {
-    
-  }
+  public init() { }
   
   public func request<T: Decodable>(
     endpoint: Endpoint,
@@ -93,7 +107,7 @@ public final class NetworkManager {
         
         return .success(decodedResponse)
       default:
-        return .failure(NetworkError.unknown)
+        return .failure(NetworkError.unexpected(statusCode: response.statusCode))
       }
     } catch {
       return .failure(NetworkError.unknown)
